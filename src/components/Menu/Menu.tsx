@@ -28,7 +28,7 @@ const Menu: React.FC = () => {
         </h1>
         <BtnAddTask className="my-8 mx-4" />
         <NavLinks classActive={classLinkActive} />
-        <Directories classActive={classLinkActive} />
+        {/* <Directories classActive={classLinkActive} /> */}
       </header>
     </LayoutMenus>
   );

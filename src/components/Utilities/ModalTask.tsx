@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import axios from "axios";
 import { Task } from "../../interfaces";
 import { useAppSelector } from "../../store/hooks";
 import Modal from "./Modal";
@@ -90,13 +91,14 @@ const ModalCreateTask: React.FC<{
     return directories[0];
   });
 
-  const addNewTaskHandler = (event: React.FormEvent): void => {
+  const addNewTaskHandler = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
 
     isTitleValid.current = title.trim().length > 0;
     isDateValid.current = date.trim().length > 0;
 
     if (isTitleValid.current && isDateValid.current) {
+      
       const newTask: Task = {
         title: title,
         dir: selectedDirectory,
@@ -104,12 +106,22 @@ const ModalCreateTask: React.FC<{
         date: date,
         completed: isCompleted,
         important: isImportant,
-        id: task?.id ? task.id : Date.now().toString(),
+        // id: task?.id ? task.id : Date.now().toString(),
+        id: task?.id ? task.id : `${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
       };
-      onConfirm(newTask);
-      onClose();
+
+      try {
+        console.log(newTask);
+        const response = await axios.post("http://127.0.0.1:8000/api/todos/create", newTask);
+        console.log("Task created successfully:", response.data);
+        onConfirm(newTask);
+        onClose();
+      } catch (error) {
+        console.error("Error creating task:", error);
+      }
     }
   };
+
   return (
     <Modal onClose={onClose} title={nameForm}>
       <form
@@ -148,7 +160,7 @@ const ModalCreateTask: React.FC<{
             onChange={({ target }) => setDescription(target.value)}
           ></textarea>
         </label>
-        <label>
+        {/* <label>
           Select a directory
           <select
             className="block w-full"
@@ -165,7 +177,7 @@ const ModalCreateTask: React.FC<{
               </option>
             ))}
           </select>
-        </label>
+        </label> */}
         <InputCheckbox
           isChecked={isImportant}
           setChecked={setIsImportant}

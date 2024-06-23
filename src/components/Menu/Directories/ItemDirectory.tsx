@@ -54,7 +54,7 @@ const ItemDirectory: React.FC<{ dir: string; classActive: string }> = ({
           text="This directory and all its tasks will be deleted."
         />
       )}
-      <li
+      {/* <li
         className={`flex items-center pr-4 pl-9 py-2 itemDirectory ${
           currentPath === "/dir/" + dir ? classActive : ""
         }`}
@@ -83,7 +83,7 @@ const ItemDirectory: React.FC<{ dir: string; classActive: string }> = ({
             </button>
           </div>
         )}
-      </li>
+      </li> */}
     </>
   );
 };
