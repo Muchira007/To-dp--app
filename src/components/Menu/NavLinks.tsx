@@ -22,6 +22,10 @@ const links = [
     name: "Uncompleted tasks",
     path: "/uncompleted",
   },
+  {
+    name: "Login",
+    path: "src/components/Login",
+  },
 ];
 
 const NavLinks: React.FC<{ classActive: string }> = ({ classActive }) => {

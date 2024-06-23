@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { modalActions } from "./store/Modal.store";
 import { tasksActions } from "./store/Tasks.store";
 
+
 const App: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
 
