@@ -1,118 +1,74 @@
-export const Img = `width: '30vw'`
+// styles.css
+import { CSSProperties } from 'react';
 
-
-  
-  export const Page = 
- `   width: '100vw',
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'row',`
-  
-  
-  export const LeftSide = `
-    width: '50vw',
-    height: '100vh',
-    backgroundColor: '#eee',
+const styles: Record<string, CSSProperties> = {
+  page: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',`
-  
-  
-  export const RightSide = `
-    width: '50vw',
+    alignItems: 'center',
     height: '100vh',
+    backgroundColor: '#f5f5f5',
+  },
+  leftSide: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    padding: '2rem',
+  },
+  img: {
+    maxWidth: '200px',
+  },
+  rightSide: {
+    flex: 1,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'left',
-    paddingLeft: '12.5vw',
-    boxSizing: 'border-box',`
-  
-  
-  export const Title = `
-    color: '#333',
-    fontFamily: 'Roboto, Arial',
-    fontSize: '40px',
-    margin: '12px',
-    marginLeft: 0,`
-  
-  
-  export const Subtitle =` 
-    color: '#999',
-    fontFamily: 'Roboto, Arial',
-    fontSize: '16px',
-    fontWeight: 300,
-    margin: '8px',
-    marginLeft: 0,
-    marginRight: '16px',
-  
-    a: {
-      color: '#7f56da',
-      fontWeight: 'bold',
-  
-      '&:hover': 
-        color: '#613db7',
-        cursor: 'pointer',
-      
-    },
-  `
-  
-  export const FieldName = `
-    color: '#777',
-    fontFamily: 'Roboto, Arial',
-    fontSize: '16px',
-    fontWeight: '',
-    margin: '8px',
-    marginLeft: 0,`
-  
-  
-  export const InputField = `
-    width: '25vw',
-    height: '40px',
-    borderRadius: '8px',
-    border: '1px solid #999',
-    padding: '8px',
-    fontSize: '16px',
-    color: '#777',
-    boxSizing: 'border-box',
-  
-    '&:focus': {
-      border: '1px solid #999',
-      outline: 'none',
-    },
-  
-    '&::placeholder': {
-      color: '#bbb',
-    },`
-  
-  
-  export const SignIn = `
-    width: '25vw',
-    height: '40px',
-    borderRadius: '8px',
-    backgroundColor: '#7f56da',
-    color: 'white',
-    fontSize: '16px',
-    border: '0px',
-    fontWeight: 400,
-    margin: '16px 0px',
-  
-    '&:hover': {
-      backgroundColor: '#613db7',
-      cursor: 'pointer',
-    },`
-  
-  
-  export const Checkbox = `
-    border: '1px solid #333',
-    marginRight: '8px',
-    height: '16px',
-    width: '16px',`
-  
-  
-  export const KeepSigned =` 
-    display: 'flex',
-    justifyContent: 'left',
     alignItems: 'center',
-    marginTop: '16px',
-  `
+    padding: '2rem',
+  },
+  title: {
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
+    marginBottom: '1rem',
+  },
+  subtitle: {
+    fontSize: '1.2rem',
+    marginBottom: '1rem',
+  },
+  fieldName: {
+    fontSize: '1.2rem',
+    fontWeight: 'bold',
+    marginBottom: '0.5rem',
+  },
+  inputField: {
+    width: '100%',
+    padding: '0.5rem',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    marginBottom: '1rem',
+  },
+  keepSigned: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '1rem',
+  },
+  checkbox: {
+    marginRight: '0.5rem',
+  },
+  signIn: {
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    padding: '0.5rem 1rem',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    marginBottom: '1rem',
+  },
+  signInHover: {
+    backgroundColor: '#45a049',
+  },
+};
+
+export default styles;
