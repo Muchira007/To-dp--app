@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Navigate, Route, useNavigate } from "react-router-dom";
 import { Task } from "../../interfaces";
 import { useAppSelector } from "../../store/hooks";
 import Modal from "./Modal";
@@ -47,7 +48,18 @@ const ModalCreateTask: React.FC<{
 
   const todayDate: string = year + "-" + month + "-" + day;
   const maxDate: string = year + 1 + "-" + month + "-" + day;
+  const navigate = useNavigate();
 
+  const userToken = sessionStorage.getItem("userToken");
+  const isAuthenticated = !!userToken;
+  console.log(userToken);
+
+  if(!userToken){
+    navigate("/")
+  }
+
+  const token = "Bearer "+userToken;
+  
   const [description, setDescription] = useState<string>(() => {
     if (task) {
       return task.description;
@@ -90,12 +102,12 @@ const ModalCreateTask: React.FC<{
     return directories[0];
   });
 
-  const addNewTaskHandler = (event: React.FormEvent): void => {
+  const addNewTaskHandler = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     isTitleValid.current = title.trim().length > 0;
     isDateValid.current = date.trim().length > 0;
-
+  
     if (isTitleValid.current && isDateValid.current) {
       const newTask: Task = {
         title: title,
@@ -106,10 +118,41 @@ const ModalCreateTask: React.FC<{
         important: isImportant,
         id: task?.id ? task.id : Date.now().toString(),
       };
-      onConfirm(newTask);
-      onClose();
+  
+      try {
+        console.log(newTask);
+  
+        const headers: HeadersInit = {
+          "Content-Type": "application/json",
+        };
+  
+        if (userToken) {
+          headers["Authorization"] = token;
+        }
+  
+        const response = await fetch("http://localhost:8000/api/todos/create", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(newTask),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to create task");
+        }
+  
+        // Assuming the server responds with the created task data
+        const createdTask = await response.json();
+        console.log(createdTask);
+  
+        // onConfirm(createdTask);
+        onClose();
+      } catch (error) {
+        console.error("Error creating task:", error);
+        // Handle error (e.g., display an error message)
+      }
     }
   };
+
   return (
     <Modal onClose={onClose} title={nameForm}>
       <form

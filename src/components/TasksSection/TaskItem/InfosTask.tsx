@@ -7,7 +7,7 @@ const InfosTask: React.FC<{ task: Task; isListInView1: boolean }> = ({
   task,
   isListInView1,
 }) => {
-  const dateFormated = useDate(task.date);
+  const dateFormatted = useDate(task.date);
 
   return (
     <div className={`flex flex-col flex-1 ${isListInView1 ? "mr-6" : ""}`}>
@@ -29,7 +29,7 @@ const InfosTask: React.FC<{ task: Task; isListInView1: boolean }> = ({
         {task.description}
       </p>
       <time className="mt-auto flex w-full">
-        <Calendar className="mr-2 w-4 sm:w-5" /> {dateFormated}
+        <Calendar className="mr-2 w-4 sm:w-5" /> {dateFormatted}
       </time>
     </div>
   );

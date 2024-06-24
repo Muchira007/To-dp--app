@@ -143,6 +143,9 @@ const tasksSlice = createSlice({
         }
       });
     },
+    setTasks(state, action: PayloadAction<Task[]>) {
+      state.tasks = action.payload;
+    },
   },
 });
 
@@ -150,7 +153,7 @@ export const tasksActions = tasksSlice.actions;
 export default tasksSlice.reducer;
 
 export const tasksMiddleware =
-  (store: MiddlewareAPI) => (next: Dispatch) => (action: Action) => {
+  (store: MiddlewareAPI) => (next: Dispatch) => async (action: Action) => {
     const nextAction = next(action);
     const actionChangeOnlyDirectories =
       tasksActions.createDirectory.match(action);
@@ -181,6 +184,35 @@ export const tasksMiddleware =
         if (localStorageTasks.length === 0) {
           localStorage.removeItem("tasks");
         }
+      }
+    }
+
+    // Fetch tasks from API endpoint
+    if (action.type === "tasks/fetchTasks") {
+      try {
+        const userToken = sessionStorage.getItem("userToken");
+        const url = "http://localhost:8000"
+        const response = await fetch(
+          `${url}/api/todos/get-all`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: userToken ? userToken : "",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch tasks");
+        }
+
+        const tasksData = await response.json();
+        console.log(tasksData);
+        // Dispatch an action to update the Redux state with the fetched tasks
+        store.dispatch(tasksActions.setTasks(tasksData.tasks));
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+        // Handle error (e.g., display an error message)
       }
     }
     return nextAction;

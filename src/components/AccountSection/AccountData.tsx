@@ -48,7 +48,7 @@ const AccountData: React.FC = () => {
         <TasksDone />
         <DeleteTasks />
 
-        <div className="flex flex-col mt-4">
+        {/* <div className="flex flex-col mt-4">
           <input
             type="text"
             placeholder="Enter new first name"
@@ -69,7 +69,7 @@ const AccountData: React.FC = () => {
           >
             Update Details
           </button>
-        </div>
+        </div> */}
       </section>
     </LayoutMenus>
   );
