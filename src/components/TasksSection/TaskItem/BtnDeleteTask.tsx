@@ -8,9 +8,30 @@ const BtnDeleteTask: React.FC<{ taskId: string }> = ({ taskId }) => {
   const [showModal, setIsModalShown] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const removeTaskHandler = () => {
-    dispatch(tasksActions.removeTask(taskId));
+  const removeTaskHandler = async () => {
+    try {
+      const userToken = sessionStorage.getItem("userToken");
+      const token = "Bearer " + userToken;
+      const url = `http://localhost:8000/api/todos/delete/${taskId}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: userToken ? token : "",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete task");
+      }
+
+      // Assuming successful deletion, dispatch the action to remove the task from Redux
+      dispatch(tasksActions.removeTask(taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      // Handle error (e.g., display an error message)
+    }
   };
+
   return (
     <>
       {showModal && (

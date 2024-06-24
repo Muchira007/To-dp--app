@@ -23,7 +23,7 @@ const Login: React.FC = () => {
     }
     try {
       const url = "http://localhost:8000"
-      console.log(email,password);
+      // console.log(email,password);
 
       const response = await fetch(`${url}/api/user/login`, {
         method: "POST",

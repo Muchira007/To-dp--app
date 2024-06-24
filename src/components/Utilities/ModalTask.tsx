@@ -54,7 +54,7 @@ const ModalCreateTask: React.FC<{
 
   const userToken = sessionStorage.getItem("userToken");
   const isAuthenticated = !!userToken;
-  console.log(userToken);
+  // console.log(userToken);
 
   if(!userToken){
     navigate("/")
@@ -122,7 +122,7 @@ const ModalCreateTask: React.FC<{
       };
   
       try {
-        console.log(newTask);
+        // console.log(newTask);
   
         const headers: HeadersInit = {
           "Content-Type": "application/json",
@@ -144,7 +144,7 @@ const ModalCreateTask: React.FC<{
   
         // Assuming the server responds with the created task data
         const createdTask = await response.json();
-        console.log(createdTask.data);
+        // console.log(createdTask.data);
         // console.log(createdTask);
 
         // Update sessionStorage with the new task list

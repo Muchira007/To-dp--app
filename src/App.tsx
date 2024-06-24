@@ -21,7 +21,7 @@ const App: React.FC = () => {
 
   const userToken = sessionStorage.getItem("userToken");
   const isAuthenticated = !!userToken;
-  console.log(userToken);
+  // console.log(userToken);
 
   if(!userToken){
     navigate('/')

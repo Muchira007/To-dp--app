@@ -9,8 +9,34 @@ const BtnMarkAsImportant: React.FC<{
 }> = ({ taskId, taskImportant }) => {
   const dispatch = useAppDispatch();
 
-  const markAsImportantHandler = () => {
-    dispatch(tasksActions.markAsImportant(taskId));
+  const markAsImportantHandler = async () => {
+    try {
+      const userToken = sessionStorage.getItem("userToken");
+      const token = "Bearer " + userToken;
+      const url = `http://localhost:8000/api/todos/important/${taskId}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: userToken ? token : "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ important: !taskImportant }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update task importance");
+      }
+
+      // Assuming the server responds with updated task data
+      const updatedTask = await response.json();
+      console.log("Updated Task:", updatedTask);
+
+      // Dispatch an action to update Redux state with the updated task importance
+      dispatch(tasksActions.markAsImportant(taskId));
+    } catch (error) {
+      console.error("Error updating task importance:", error);
+      // Handle error (e.g., display an error message)
+    }
   };
 
   return (

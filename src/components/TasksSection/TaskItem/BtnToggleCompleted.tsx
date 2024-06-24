@@ -1,15 +1,73 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch } from "../../../store/hooks";
 import { tasksActions } from "../../../store/Tasks.store";
 import { ReactComponent as SvgX } from "../../../assets/x.svg";
 import { ReactComponent as Check } from "../../../assets/check.svg";
+import { Task } from "../../../interfaces";
 
-const BtnToggleCompleted: React.FC<{
+interface Props {
   taskCompleted: boolean;
   taskId: string;
   isListInView1: boolean;
-}> = ({ taskCompleted, taskId, isListInView1 }) => {
+}
+
+const BtnToggleCompleted: React.FC<Props> = ({ taskCompleted, taskId, isListInView1 }) => {
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const markTaskAsCompleted = async () => {
+      try {
+        const userToken = sessionStorage.getItem("userToken");
+        const token = "Bearer " + userToken;
+        const url = `http://localhost:8000/api/todos/complete/${taskId}`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: userToken ? token : "",
+            "Content-Type": "application/json",
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to mark task as completed");
+        }
+    
+        const updatedTask = await response.json();
+        // console.log("Updated Task:", updatedTask);
+    
+        // Get the current tasks from sessionStorage
+        const currentTasks: Task[] = sessionStorage.getItem("tasks")
+          ? JSON.parse(sessionStorage.getItem("tasks")!)
+          : [];
+    
+        // Find the index of the task to be updated based on its ID
+        const updatedTaskIndex = currentTasks.findIndex((task) => task.id === updatedTask.data.id);
+    
+        if (updatedTaskIndex !== -1) {
+          // Update the task in the current tasks array
+          currentTasks[updatedTaskIndex] = updatedTask.data;
+    
+          // Update sessionStorage with the updated tasks array
+          sessionStorage.setItem("tasks", JSON.stringify(currentTasks));
+    
+          // Dispatch an action to update the Redux state with the updated tasks
+          dispatch(tasksActions.setTasks(currentTasks));
+    
+          // Dispatch an action to update Redux state with the updated task data
+          // dispatch(tasksActions.toggleTaskCompleted(taskId));
+        } else {
+          console.error("Task not found in sessionStorage:", updatedTask.data.id);
+        }
+      } catch (error) {
+        console.error("Error marking task as completed:", error);
+        // Handle error (e.g., display an error message)
+      }
+    };    
+
+    if (taskCompleted) {
+      markTaskAsCompleted();
+    }
+  }, [taskCompleted, taskId, dispatch]);
 
   const toggleTaskCompleted = (id: string) => {
     dispatch(tasksActions.toggleTaskCompleted(id));

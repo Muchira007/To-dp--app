@@ -11,7 +11,7 @@ import { updateUser } from "../../store/authSlice"; // Import the updateUser act
 const AccountData: React.FC = () => {
   const menuOpen = useAppSelector((state) => state.menu.menuAccountOpened);
   const user = useAppSelector((state) => state.auth.user); // Get the user object from Redux
-  console.log(user);
+  // console.log(user);
   const dispatch = useAppDispatch();
 
   const [newFirstName, setNewFirstName] = useState("");
