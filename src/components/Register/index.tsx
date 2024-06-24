@@ -31,7 +31,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      const url = "http://localhost:8000"
+      const url = "https://task-api.sandbox.co.ke:8000/api"
       const role_id = 1;
 
 
@@ -41,7 +41,7 @@ const Register: React.FC = () => {
       }
 
   
-      const response = await fetch(`${url}/api/user/create`, {
+      const response = await fetch(`${url}/user/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password,first_name,last_name,role_id,phone_number }),

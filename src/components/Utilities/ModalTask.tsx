@@ -131,8 +131,8 @@ const ModalCreateTask: React.FC<{
         if (userToken) {
           headers["Authorization"] = token;
         }
-        const url = 'http://localhost:8000';
-        const response = await fetch(`${url}/api/todos/create`, {
+        const url = 'https://task-api.sandbox.co.ke:8000/api';
+        const response = await fetch(`${url}/todos/create`, {
           method: "POST",
           headers: headers,
           body: JSON.stringify(newTask),
@@ -204,7 +204,7 @@ const ModalCreateTask: React.FC<{
             onChange={({ target }) => setDescription(target.value)}
           ></textarea>
         </label>
-        <label>
+        {/* <label>
           Select a directory
           <select
             className="block w-full"
@@ -221,7 +221,7 @@ const ModalCreateTask: React.FC<{
               </option>
             ))}
           </select>
-        </label>
+        </label> */}
         <InputCheckbox
           isChecked={isImportant}
           setChecked={setIsImportant}

@@ -141,8 +141,8 @@ export const tasksMiddleware =
       try {
         const userToken = sessionStorage.getItem("userToken");
         const token = "Bearer " + userToken;
-        const url = "http://localhost:8000";
-        const response = await fetch(`${url}/api/todos/get-all`, {
+        const url = "https://task-api.sandbox.co.ke:8000/api";
+        const response = await fetch(`${url}/todos/get-all`, {
           method: "POST",
           headers: {
             Authorization: userToken ? token : "",

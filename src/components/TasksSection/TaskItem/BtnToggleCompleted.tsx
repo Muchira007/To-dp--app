@@ -19,7 +19,7 @@ const BtnToggleCompleted: React.FC<Props> = ({ taskCompleted, taskId, isListInVi
       try {
         const userToken = sessionStorage.getItem("userToken");
         const token = "Bearer " + userToken;
-        const url = `http://localhost:8000/api/todos/complete/${taskId}`;
+        const url = `https://task-api.sandbox.co.ke:8000/api/todos/complete/${taskId}`;
         const response = await fetch(url, {
           method: "POST",
           headers: {
