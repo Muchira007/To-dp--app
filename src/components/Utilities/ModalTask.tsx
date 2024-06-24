@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Navigate, Route, useNavigate } from "react-router-dom";
 import { Task } from "../../interfaces";
-import { useAppSelector } from "../../store/hooks";
+import { tasksActions } from "../../store/Tasks.store";
+import { useAppSelector,useAppDispatch } from "../../store/hooks";
 import Modal from "./Modal";
 
 const InputCheckbox: React.FC<{
@@ -34,6 +35,7 @@ const ModalCreateTask: React.FC<{
   onConfirm: (task: Task) => void;
 }> = ({ onClose, task, nameForm, onConfirm }) => {
   const directories = useAppSelector((state) => state.tasks.directories);
+  const dispatch = useAppDispatch();
 
   const today: Date = new Date();
   let day: number = today.getDate();
@@ -129,8 +131,8 @@ const ModalCreateTask: React.FC<{
         if (userToken) {
           headers["Authorization"] = token;
         }
-  
-        const response = await fetch("http://localhost:8000/api/todos/create", {
+        const url = 'http://localhost:8000';
+        const response = await fetch(`${url}/api/todos/create`, {
           method: "POST",
           headers: headers,
           body: JSON.stringify(newTask),
@@ -142,8 +144,19 @@ const ModalCreateTask: React.FC<{
   
         // Assuming the server responds with the created task data
         const createdTask = await response.json();
-        console.log(createdTask);
+        console.log(createdTask.data);
+        // console.log(createdTask);
+
+        // Update sessionStorage with the new task list
+        const currentTasks = sessionStorage.getItem("tasks")
+          ? JSON.parse(sessionStorage.getItem("tasks")!)
+          : [];
+        const updatedTasks = [createdTask.data, ...currentTasks];
+        sessionStorage.setItem("tasks", JSON.stringify(updatedTasks));
   
+        // Dispatch an action to update the Redux state with the new task list
+        dispatch(tasksActions.setTasks(updatedTasks));
+
         // onConfirm(createdTask);
         onClose();
       } catch (error) {

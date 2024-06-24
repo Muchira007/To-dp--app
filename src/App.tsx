@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Navigate, Route, useNavigate } from "react-router-dom";
 import AccountData from "./components/AccountSection/AccountData";
 import Footer from "./components/Footer";
@@ -16,6 +17,7 @@ const App: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const userToken = sessionStorage.getItem("userToken");
   const isAuthenticated = !!userToken;
@@ -24,9 +26,13 @@ const App: React.FC = () => {
   if(!userToken){
     navigate('/')
   }
+
+  useEffect(() => {
+    dispatch({ type: "tasks/fetchTasks" });
+  }, [dispatch]);
   // !isAuthenticated && <Navigate to="/" />
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const closeModalCreateTask = () => {
     dispatch(modalActions.closeModalCreateTask());
