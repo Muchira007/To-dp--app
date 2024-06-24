@@ -1,7 +1,9 @@
 import React from "react";
+import { Navigate, Route, useNavigate } from "react-router-dom";
 import AccountData from "./components/AccountSection/AccountData";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu/Menu";
+import Login from "./components/Login";
 import TasksSection from "./components/TasksSection/TasksSection";
 import ModalCreateTask from "./components/Utilities/ModalTask";
 import { Task } from "./interfaces";
@@ -12,6 +14,17 @@ import { tasksActions } from "./store/Tasks.store";
 
 const App: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
+
+  const navigate = useNavigate();
+
+  const userToken = sessionStorage.getItem("userToken");
+  const isAuthenticated = !!userToken;
+  console.log(userToken);
+
+  if(!userToken){
+    navigate('/')
+  }
+  // !isAuthenticated && <Navigate to="/" />
 
   const dispatch = useAppDispatch();
 

@@ -1,35 +1,28 @@
+// index.tsx
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import store from "./store/index";
 import App from "./App";
 import Login from "./components/Login";
+import Register from "./components/Register";
+import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute component
 import "./index.css";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/login" element={<Login />} />
+          {/* Use PrivateRoute instead of Route for protected routes */}
+          <Route path="/" element={<Login />} /> {/* Protected route */}
+          <Route path="/tasks/*" element={<App />} />
+          <Route path="*" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import RoutesComponent from './routes'; // Import RoutesComponent
-// import './index.css'; // Assuming you have some global styles
-
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <RoutesComponent /> // Render RoutesComponent
-//   </React.StrictMode>,
-//   document.getElementById('root')
-// );

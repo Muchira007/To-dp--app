@@ -4,23 +4,47 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext, { AuthType } from "../../context/authContent";
 import { Navigate } from "react-router-dom";
 import App from "../../App";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/authSlice";
 
 const Login: React.FC = () => {
-//   const { setUserData } = useContext(AuthContext) as AuthType;
-//   const [email, setEmail] = useState("");
-//   const navigate =useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-//   function handleLogin() {
-//     localStorage.setItem('@Project:email', email);
-//     setUserData({ email });
-//     navigate('/App')
-    
+  const handleLogin = async () => {
+    setError(null); // Clear any previous errors
+    // Validation checks
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required");
+      return;
+    }
+    try {
+      const url = "http://localhost:8000"
+      console.log(email,password);
 
-//   }
-
-//   function handleEmail(event: React.ChangeEvent<HTMLInputElement>) {
-//     setEmail(event.target.value);
-  //}
+      const response = await fetch(`${url}/api/user/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) {
+        throw new Error("Invalid credentials"); // Or handle specific errors from the API
+      }
+      // console.log(response);
+      const data = await response.json();
+      // console.log(data.token);
+      // Dispatch login action or handle authentication success
+      dispatch(login(data.email));
+      // Store user token in sessionStorage
+      sessionStorage.setItem("userToken", data.token);
+      navigate("/tasks");
+    } catch (error) {
+      setError(error instanceof Error? error.message : "An error occurred");
+    }
+  };
 
   return (
     <div className="center-screen" style={{
@@ -69,9 +93,10 @@ const Login: React.FC = () => {
             borderRadius: '4px',
             marginBottom: '1rem'
           }}
-          value="email"
-          id="email"
-          placeholder="Insert your email"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <h2 style={{
           fontSize: '1.2rem',
@@ -88,6 +113,8 @@ const Login: React.FC = () => {
           }}
           placeholder="Insert your password"
           type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <div style={{
           display: 'flex',
@@ -111,14 +138,15 @@ const Login: React.FC = () => {
             borderRadius: '4px',
             cursor: 'pointer',
             marginBottom: '1rem'
-          }}>
+          }}
+          onClick={handleLogin}>
             Sign In
           </button>
         </Link>
         <h2 style={{
           fontSize: '1.2rem',
           marginBottom: '0'
-        }}>Don't have an account? <a href="#">Sign Up</a></h2>
+        }}>Don't have an account? <a href="/register">Sign Up</a></h2>
       </div>
     </div>
   );
