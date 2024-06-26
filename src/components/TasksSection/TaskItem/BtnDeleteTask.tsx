@@ -12,7 +12,7 @@ const BtnDeleteTask: React.FC<{ taskId: string }> = ({ taskId }) => {
     try {
       const userToken = sessionStorage.getItem("userToken");
       const token = "Bearer " + userToken;
-      const url = `http://localhost:8000/api/todos/delete/${taskId}`;
+      const url = `https://task-api.sandbox.co.ke:8000/api/todos/delete/${taskId}`;
       const response = await fetch(url, {
         method: "POST",
         headers: {

@@ -10,6 +10,7 @@ export interface Task {
 
 
 export interface Users {
+  id: string;
   first_name: string;
   last_name: string;
   // dir: string;
@@ -19,6 +20,5 @@ export interface Users {
   // completed: boolean;
   // important: boolean;
   updated_at: string;
-  id: string;
   // id: string;
 }

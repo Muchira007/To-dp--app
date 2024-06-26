@@ -1,31 +1,38 @@
-import { Action, createSlice, Dispatch, MiddlewareAPI, PayloadAction } from "@reduxjs/toolkit";
+import { Action, createSlice, Dispatch, MiddlewareAPI, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { Users } from "../interfaces";
 
-const getSavedDirectories = (): string[] => {
-  let dirList: string[] = [];
-  if (sessionStorage.getItem("directories")) {
-    dirList = JSON.parse(sessionStorage.getItem("directories")!);
-    const mainDirExists = dirList.some((dir: string) => dir === "Main");
-    if (!mainDirExists) {
-      dirList.push("Main");
-    }
-  } else {
-    dirList.push("Main");
-  }
+// Define the fetchUsers thunk action
+export const fetchUsers = createAsyncThunk(
+  'users/fetchUsers',
+  async (_, thunkAPI) => {
+    try {
+      const userToken = sessionStorage.getItem("userToken");
+      const token = "Bearer " + userToken;
+      const url = "https://task-api.sandbox.co.ke:8000/api";
+      const response = await fetch(`${url}/user/get-all`, {
+        method: "POST",
+        headers: {
+          Authorization: userToken ? token : "",
+        },
+      });
 
-  if (sessionStorage.getItem("users")) {
-    const savedusersList = JSON.parse(sessionStorage.getItem("users")!);
-    let dirNotSaved: string[] = [];
-    savedusersList.forEach((user: Users) => {
-      if (!dirList.includes(user.first_name)) {
-        if (!dirNotSaved.includes(user.first_name)) {
-          dirNotSaved.push(user.first_name);
-        }
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
       }
-    });
-    dirList = [...dirList, ...dirNotSaved];
+
+      const usersData = await response.json();
+      return usersData.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return thunkAPI.rejectWithValue(error.message);
+      } else {
+        return thunkAPI.rejectWithValue("An unknown error occurred");
+      }
+    }
   }
-  return dirList;
+);
+const getSavedDirectories = () => {
+  return ["Main"];
 };
 
 const initialState: {
@@ -37,6 +44,15 @@ const initialState: {
     : [],
   directories: getSavedDirectories(),
 };
+// const initialState: {
+//   users: Users[];
+//   directories: string[];
+// } = {
+//   users: sessionStorage.getItem("users")
+//     ? JSON.parse(sessionStorage.getItem("users")!)
+//     : [],
+//   directories: getSavedDirectories(),
+// };
 
 const usersSlice = createSlice({
   name: "users",
@@ -46,8 +62,8 @@ const usersSlice = createSlice({
       state.users = [action.payload, ...state.users];
     },
     removeUser(state, action) {
-      const newusersList = state.users.filter((user) => user.id !== action.payload);
-      state.users = newusersList;
+      const newUsersList = state.users.filter((user) => user.id !== action.payload);
+      state.users = newUsersList;
     },
     editUser(state, action: PayloadAction<Users>) {
       const userId = action.payload.id;
@@ -90,10 +106,15 @@ const usersSlice = createSlice({
       state.users = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
+      state.users = action.payload;
+    });
+  },
 });
 
-export const usersActions = usersSlice.actions;
-export default usersSlice.reducer;
+export const usersActions = { ...usersSlice.actions, fetchUsers };
+export default usersSlice.reducer; 
 
 export const usersMiddleware =
   (store: MiddlewareAPI) => (next: Dispatch) => async (action: Action) => {
