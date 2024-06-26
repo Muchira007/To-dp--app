@@ -1,5 +1,6 @@
 import { Action, createSlice, Dispatch, MiddlewareAPI, PayloadAction } from "@reduxjs/toolkit";
 import { Task } from "../interfaces";
+import { usersActions } from "./Users.store";
 
 const getSavedDirectories = (): string[] => {
   let dirList: string[] = [];
@@ -62,7 +63,6 @@ const tasksSlice = createSlice({
     toggleTaskCompleted(state, action: PayloadAction<string>) {
       const taskId = action.payload;
       const currTask = state.tasks.find((task) => task.id === taskId)!;
-      // console.log("Task toggled:", currTask);
       currTask.completed = !currTask.completed;
     },
     deleteAllData(state) {
@@ -127,7 +127,6 @@ export const tasksMiddleware =
     }
 
     if (tasksActions.removeTask.match(action)) {
-      // console.log(JSON.parse(sessionStorage.getItem("tasks")!));
       if (sessionStorage.getItem("tasks")) {
         const sessionStorageTasks = JSON.parse(sessionStorage.getItem("tasks")!);
         if (sessionStorageTasks.length === 0) {
@@ -154,14 +153,36 @@ export const tasksMiddleware =
         }
 
         const tasksData = await response.json();
-        // console.log(tasksData.data);
-        // Dispatch an action to update the Redux state with the fetched tasks
         store.dispatch(tasksActions.setTasks(tasksData.data));
-        // Store the fetched tasks in sessionStorage
         sessionStorage.setItem("tasks", JSON.stringify(tasksData.data));
       } catch (error) {
         console.error("Error fetching tasks:", error);
-        // Handle error (e.g., display an error message)
+      }
+    }
+
+    // Fetch users from API endpoint
+    if (action.type === "users/fetchUsers") {
+      try {
+        const userToken = sessionStorage.getItem("userToken");
+        const token = "Bearer " + userToken;
+        const url = "https://task-api.sandbox.co.ke:8000/api";
+        const response = await fetch(`${url}/user/get-all`, {
+          method: "POST",
+          headers: {
+            Authorization: userToken ? token : "",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+
+        const usersData = await response.json();
+        console.log("usersData", usersData.data);       
+        store.dispatch(usersActions.setUsers(usersData.data));
+        sessionStorage.setItem("users", JSON.stringify(usersData.data));
+      } catch (error) {
+        console.error("Error fetching users:", error);
       }
     }
     return nextAction;

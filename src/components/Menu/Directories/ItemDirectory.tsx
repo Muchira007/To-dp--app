@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAppDispatch } from "../../../store/hooks";
-import { tasksActions } from "../../../store/Tasks.store";
+import { usersActions } from "../../../store/Users.store";
 import { ReactComponent as Trash } from "../../../assets/trash.svg";
 import { ReactComponent as Edit } from "../../../assets/edit.svg";
 import ModalConfirm from "../../Utilities/ModalConfirm";
 import ModalDirectory from "../../Utilities/ModalDirectory";
 
 const ItemDirectory: React.FC<{ dir: string; classActive: string }> = ({
-  dir,
-  classActive,
-}) => {
+    dir,
+    classActive,
+  }) => {
   const route = useLocation();
   const currentPath = route.pathname;
 
@@ -24,12 +24,12 @@ const ItemDirectory: React.FC<{ dir: string; classActive: string }> = ({
   };
 
   const deleteDirectoryHandler = () => {
-    dispatch(tasksActions.deleteDirectory(dir));
+    dispatch(usersActions.deleteDirectory(dir));
   };
 
   const confirmEditDirNameHandler = (dirName: string) => {
     dispatch(
-      tasksActions.editDirectoryName({
+      usersActions.editDirectoryName({
         previousDirName: dir,
         newDirName: dirName,
       })

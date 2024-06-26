@@ -11,10 +11,9 @@ import { Task } from "./interfaces";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { modalActions } from "./store/Modal.store";
 import { tasksActions } from "./store/Tasks.store";
-import { usersActions } from "./store/Users.store";
 
 
-const App: React.FC = () => {
+const UsersApp: React.FC = () => {
   const modal = useAppSelector((state) => state.modal);
 
   const navigate = useNavigate();
@@ -30,10 +29,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     dispatch({ type: "tasks/fetchTasks" });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch({ type: "users/fetchUsers" });
   }, [dispatch]);
   // !isAuthenticated && <Navigate to="/" />
 
@@ -64,4 +59,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default UsersApp;
